@@ -19,7 +19,7 @@
 	{#each stories[selectedStoryIndex].paragraphs as paragraph, paragraphIndex}
 		<div>
 			{#each paragraph as sentence, sentenceIndex (sentence)}
-				{#if sentenceIndex !== 0}&nbsp{/if}
+				<!-- {#if sentenceIndex !== 0}&nbsp{/if} -->
 				<!-- svelte-ignore a11y_click_events_have_key_events -->
 				<!-- svelte-ignore a11y_no_static_element_interactions -->
 				<div class="sentence" onclick={() => selectSentence(paragraphIndex, sentenceIndex)}>
@@ -33,13 +33,11 @@
 <style>
 	.sentence {
 		display: inline-block;
+		white-space: pre;
 		transform: scale(1);
 		transition: transform 0.2s;
 	}
 	.sentence:hover {
 		transform: scale(1.01);
-	}
-	p {
-		white-space: pre-line;
 	}
 </style>

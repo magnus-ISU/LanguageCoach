@@ -19,3 +19,10 @@
 		<Chat bind:stories bind:selectedStoryIndex bind:selectedSentence></Chat>
 	{/if}
 {/if}
+
+<style>
+	:global(*) {
+		color: #fff;
+		background-color: #222;
+	}
+</style>
