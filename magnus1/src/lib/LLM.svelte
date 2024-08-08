@@ -2,6 +2,7 @@
 	import OpenAI from "openai"
 	import SvelteMarkdown from "svelte-markdown"
 	import type { Message } from "./const.svelte"
+	import Textarea from "./Textarea.svelte"
 
 	type Props = {
 		messages: Message[]
@@ -78,7 +79,11 @@
 	{/if}
 </div>
 
-<textarea bind:value={userInput} placeholder="Chat with an llm..." disabled={isLoading} onkeypress={addChat}></textarea>
+<Textarea bind:value={userInput} keypress={addChat}>
+	{#snippet placeholder()}
+		Shift+Enter to chat with an LLM...
+	{/snippet}
+</Textarea>
 
 <style>
 	.chat-container {
@@ -95,23 +100,5 @@
 
 	.assistant {
 		text-align: left;
-	}
-
-	textarea {
-		width: 100%;
-		height: 10rem;
-		border: 1px solid #ccc;
-		border-radius: 10px;
-		border-color: #808;
-		font:
-			14px Arial,
-			sans-serif;
-		padding: 0.5rem;
-		box-sizing: border-box;
-	}
-	textarea:focus {
-		outline: none !important;
-		border-color: #b0b;
-		box-shadow: 0 0 10px #719ece;
 	}
 </style>

@@ -18,7 +18,9 @@
 	<Story bind:stories bind:selectedStoryIndex bind:selectedSentence />
 
 	{#if selectedSentence !== undefined}
-		<Chat bind:stories bind:selectedStoryIndex bind:selectedSentence></Chat>
+		{#key selectedSentence}
+			<Chat bind:stories bind:selectedStoryIndex bind:selectedSentence></Chat>
+		{/key}
 	{/if}
 {/if}
 

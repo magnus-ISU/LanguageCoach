@@ -26,18 +26,15 @@
 	}
 
 	function initialMessageText(): string {
-		return `
-		You are a language instruction program that outputs markdown. The user is reading the story "${story.name}"
+		return `You are a language instruction program that outputs markdown. Do not apologize, simply omit anything you cannot do. The user is reading the story "${story.name}". The context in the story is:
 
-		The context in the story is:
+\`\`\`
+${sentenceContext(story, selectedSentence.paragraph)}
+\`\`\`
 
-		${sentenceContext(story, selectedSentence.paragraph)}
+They need help understanding this sentence: "${sentence.sentence.trim()}". Break it down for them.
 
-
-		They need help understanding this sentence: "${sentence.sentence.trim()}". Break it down for them.
-
-		The user says: "${userLevel}"
-		`
+The user says: "${userLevel}"`
 	}
 </script>
 

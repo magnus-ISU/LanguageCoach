@@ -9,6 +9,7 @@
 	let { stories = $bindable(), selectedStoryIndex = $bindable(), selectedSentence = $bindable() }: Props = $props()
 
 	function selectSentence(paragraph: number, sentence: number) {
+		console.log("click")
 		selectedSentence = {
 			paragraph: paragraph,
 			sentence: sentence,

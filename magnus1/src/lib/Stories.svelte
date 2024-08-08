@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { StoryEntry, SelectedSentence, Sentences } from "./const.svelte"
+	import Textarea from "./Textarea.svelte"
 
 	type Props = {
 		stories: StoryEntry[]
@@ -91,59 +92,12 @@ The robber thought my uncle was crazy. He took the robe, dashed out the door, an
 	</div>
 {/each}
 
-<div class="textarea-container">
-	<div class="textarea-placeholder">
+<Textarea bind:value={textarea_value} keypress={addStory}>
+	{#snippet placeholder()}
 		{#if textarea_value === ""}Put the title of the story on the first line{/if}
 		{#if [-1, textarea_value.length - 1].includes(textarea_value.indexOf("\n"))}
 			<br />Enter your story afterwards
 			<br />Shift+Enter to add the story
 		{/if}
-	</div>
-	<textarea onkeypress={addStory} bind:value={textarea_value}></textarea>
-</div>
-
-<style>
-	.textarea-container {
-		position: relative;
-		width: 100%;
-		height: 10rem;
-	}
-
-	textarea {
-		width: 100%;
-		height: 100%;
-		position: absolute;
-		top: 0;
-		left: 0;
-		background-color: transparent;
-		resize: none;
-		border: 1px solid #ccc;
-		border-radius: 10px;
-		border-color: #808;
-	}
-	textarea:focus {
-		outline: none !important;
-		border-color: #b0b;
-		box-shadow: 0 0 10px #719ece;
-	}
-
-	.textarea-placeholder {
-		position: absolute;
-		top: 1px;
-		left: 1px;
-		color: #666;
-		pointer-events: none;
-		width: 100%;
-		height: 100%;
-		overflow: hidden;
-	}
-
-	textarea,
-	.textarea-placeholder {
-		font:
-			14px Arial,
-			sans-serif;
-		padding: 0.5rem;
-		box-sizing: border-box;
-	}
-</style>
+	{/snippet}
+</Textarea>
