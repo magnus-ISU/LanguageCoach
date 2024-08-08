@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onMount } from "svelte"
 	import OpenAI from "openai"
 
 	type Message = OpenAI.Chat.ChatCompletionMessageParam
@@ -37,10 +36,6 @@
 
 		isLoading = false
 	}
-
-	onMount(() => {
-		// You can add any initialization logic here
-	})
 </script>
 
 <main>
