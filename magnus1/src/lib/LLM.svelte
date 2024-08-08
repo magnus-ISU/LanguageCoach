@@ -10,7 +10,7 @@
 
 	let userInput = $state("")
 	let streamingMessage = $state("")
-	let isLoading = $derived(streamingMessage === "")
+	let isLoading = $derived(streamingMessage !== "")
 
 	const openai = new OpenAI({
 		apiKey: "",
@@ -29,11 +29,9 @@
 		userInput = ""
 	}
 
-	function setStream(stream: string) {
-		streamingMessage = stream
-	}
 	async function receiveMessage() {
-		setStream("...")
+		streamingMessage = "..."
+		let dummyMessage = true
 		try {
 			const stream = await openai.chat.completions.create({
 				model: "local",
@@ -42,10 +40,13 @@
 			})
 
 			for await (const chunk of stream) {
-				streamingMessage += chunk.choices[0]?.delta?.content || ""
-				console.log(streamingMessage)
+				if (dummyMessage) {
+					streamingMessage = chunk.choices[0]?.delta?.content || ""
+					dummyMessage = false
+				} else {
+					streamingMessage += chunk.choices[0]?.delta?.content || ""
+				}
 			}
-			console.log(messages, streamingMessage)
 
 			// Only update the messages array when the loading state is finished
 			messages.push({ role: "assistant", content: streamingMessage })
@@ -53,7 +54,7 @@
 			console.error("Error:", error)
 			messages.push({ role: "assistant", content: "Sorry, an error occurred." })
 		}
-		setStream("")
+		streamingMessage = ""
 	}
 
 	function addChat(event: KeyboardEvent & { currentTarget: EventTarget & HTMLTextAreaElement }) {

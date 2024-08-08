@@ -31,10 +31,8 @@
 
 		The context in the story is:
 
-		\`\`\`
 		${sentenceContext(story, selectedSentence.paragraph)}
 
-		\`\`\`
 
 		They need help understanding this sentence: "${sentence.sentence.trim()}". Break it down for them.
 
