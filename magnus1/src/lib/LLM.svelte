@@ -1,7 +1,6 @@
 <script lang="ts">
 	import OpenAI from "openai"
 	import SvelteMarkdown from "svelte-markdown"
-	import type { EventHandler } from "svelte/elements"
 
 	type Message = OpenAI.Chat.ChatCompletionMessageParam
 
