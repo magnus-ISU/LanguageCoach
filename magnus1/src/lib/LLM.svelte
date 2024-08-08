@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onMount } from "svelte"
 	import OpenAI from "openai"
 	import SvelteMarkdown from "svelte-markdown"
 
@@ -46,10 +45,6 @@
 			messages = [...messages, { role: "assistant", content: "Sorry, an error occurred." }]
 		}
 	}
-
-	onMount(() => {
-		// You can add any initialization logic here
-	})
 </script>
 
 <main>
