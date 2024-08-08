@@ -11,7 +11,7 @@
 	let sentence = $derived(paragraph[selectedSentence.sentence])
 
 	let userLevel =
-		"I am a competent Portugues speaker but don't know the differences between spanish and portugues. I know hiragana and katakana, but not any japanese kanji."
+		"I am a competent Portugues speaker but don't know the differences between spanish and portugues. I know hiragana and katakana, but not any japanese kanji. Please provide pronunciation support for kanji."
 
 	function sentenceContext(story: StoryEntry, paragraph: number): string {
 		return story.paragraphs
@@ -22,7 +22,7 @@
 
 	function initialMessage(): string {
 		return `
-		You are a language instruction program. The user is reading the story "${story.name}"
+		You are a language instruction program that outputs markdown. The user is reading the story "${story.name}"
 		The context in the story is:
 		\`\`\`
 		${sentenceContext(story, selectedSentence.paragraph)}

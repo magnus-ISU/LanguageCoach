@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from "svelte"
 	import OpenAI from "openai"
+	import SvelteMarkdown from "svelte-markdown"
 
 	type Message = OpenAI.Chat.ChatCompletionMessageParam
 
@@ -55,14 +56,12 @@
 	<div class="chat-container">
 		{#each messages as message}
 			<div class="message {message.role}">
-				<strong>{message.role}:</strong>
-				{message.content}
+				<SvelteMarkdown source={`**${message.role}:** ${message.content}`} />
 			</div>
 		{/each}
 		{#if isLoading}
 			<div class="message assistant">
-				<strong>Assistant:</strong>
-				{streamingMessage}
+				<SvelteMarkdown source={`**Assistant:** ${streamingMessage}`} />
 			</div>
 		{/if}
 	</div>
