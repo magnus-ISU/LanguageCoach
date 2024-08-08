@@ -1,28 +1,27 @@
 <script lang="ts">
 	import OpenAI from "openai"
 	import SvelteMarkdown from "svelte-markdown"
+	import type { EventHandler } from "svelte/elements"
 
 	type Message = OpenAI.Chat.ChatCompletionMessageParam
 
-	let messages: Message[] = []
-	let userInput = ""
-	let isLoading = false
-	let streamingMessage = ""
+	let messages: Message[] = $state([])
+	let userInput = $state("")
+	let streamingMessage = $state("")
+	let isLoading = $derived(streamingMessage === "")
 
 	const openai = new OpenAI({
-		apiKey: "your-api-key", // Replace with your actual API key
-		baseURL: "http://localhost:1234/v1", // Point to your local model
-		dangerouslyAllowBrowser: true, // Allow usage in browser environment
+		apiKey: "",
+		baseURL: "http://localhost:1234/v1",
+		dangerouslyAllowBrowser: true,
 	})
 
 	async function sendMessage() {
 		if (!userInput.trim()) return
 
-		isLoading = true
-		const userMessage: Message = { role: "user", content: userInput }
-		messages = [...messages, userMessage]
+		messages.push({ role: "user", content: userInput })
 		userInput = ""
-		streamingMessage = ""
+		streamingMessage = "..."
 
 		try {
 			const stream = await openai.chat.completions.create({
@@ -36,13 +35,18 @@
 			}
 
 			// Only update the messages array when the loading state is finished
-			isLoading = false
-			messages = [...messages, { role: "assistant", content: streamingMessage }]
+			messages.push({ role: "assistant", content: streamingMessage })
 			streamingMessage = ""
 		} catch (error) {
 			console.error("Error:", error)
-			isLoading = false
-			messages = [...messages, { role: "assistant", content: "Sorry, an error occurred." }]
+			messages.push({ role: "assistant", content: "Sorry, an error occurred." })
+			streamingMessage = ""
+		}
+	}
+
+	function addChat(event: KeyboardEvent & { currentTarget: EventTarget & HTMLTextAreaElement }) {
+		if (event.shiftKey && event.key === "Enter") {
+			sendMessage()
 		}
 	}
 </script>
@@ -61,10 +65,7 @@
 		{/if}
 	</div>
 
-	<form on:submit|preventDefault={sendMessage}>
-		<textarea bind:value={userInput} placeholder="Type your message..." disabled={isLoading}></textarea>
-		<button type="submit" disabled={isLoading}>Send</button>
-	</form>
+	<textarea bind:value={userInput} placeholder="Chat with an llm..." disabled={isLoading} onkeypress={addChat}></textarea>
 </main>
 
 <style>
@@ -88,18 +89,21 @@
 		text-align: left;
 	}
 
-	form {
-		display: flex;
-		flex-direction: column;
-	}
-
 	textarea {
-		flex-grow: 1;
-		padding: 5px;
-		margin-bottom: 10px;
+		width: 100%;
+		height: 10rem;
+		border: 1px solid #ccc;
+		border-radius: 10px;
+		border-color: #808;
+		font:
+			14px Arial,
+			sans-serif;
+		padding: 0.5rem;
+		box-sizing: border-box;
 	}
-
-	button {
-		padding: 5px 10px;
+	textarea:focus {
+		outline: none !important;
+		border-color: #b0b;
+		box-shadow: 0 0 10px #719ece;
 	}
 </style>

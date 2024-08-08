@@ -5,6 +5,7 @@
 		selectedSentence: SelectedSentence | undefined
 	}
 	let { stories = $bindable(), selectedStoryIndex = $bindable(), selectedSentence = $bindable() }: Props = $props()
+	let textarea_value = $state("")
 
 	stories = [
 		{
@@ -102,8 +103,6 @@
 			}
 		}
 	}
-
-	let textarea_value = $state("")
 </script>
 
 {#each stories as story, index}
