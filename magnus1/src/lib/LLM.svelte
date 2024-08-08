@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount } from "svelte"
 	import OpenAI from "openai"
 
 	type Message = OpenAI.Chat.ChatCompletionMessageParam
@@ -6,6 +7,7 @@
 	let messages: Message[] = []
 	let userInput = ""
 	let isLoading = false
+	let streamingMessage = ""
 
 	const openai = new OpenAI({
 		apiKey: "your-api-key", // Replace with your actual API key
@@ -20,22 +22,33 @@
 		const userMessage: Message = { role: "user", content: userInput }
 		messages = [...messages, userMessage]
 		userInput = ""
+		streamingMessage = ""
 
 		try {
-			const response = await openai.chat.completions.create({
+			const stream = await openai.chat.completions.create({
 				model: "your-local-model-name", // Replace with your actual model name
 				messages: messages,
+				stream: true,
 			})
 
-			const assistantMessage = response.choices[0].message
-			messages = [...messages, assistantMessage]
+			for await (const chunk of stream) {
+				streamingMessage += chunk.choices[0]?.delta?.content || ""
+			}
+
+			// Only update the messages array when the loading state is finished
+			isLoading = false
+			messages = [...messages, { role: "assistant", content: streamingMessage }]
+			streamingMessage = ""
 		} catch (error) {
 			console.error("Error:", error)
+			isLoading = false
 			messages = [...messages, { role: "assistant", content: "Sorry, an error occurred." }]
 		}
-
-		isLoading = false
 	}
+
+	onMount(() => {
+		// You can add any initialization logic here
+	})
 </script>
 
 <main>
@@ -48,7 +61,8 @@
 		{/each}
 		{#if isLoading}
 			<div class="message assistant">
-				<strong>Assistant:</strong> Thinking...
+				<strong>Assistant:</strong>
+				{streamingMessage}
 			</div>
 		{/if}
 	</div>
@@ -82,11 +96,13 @@
 
 	form {
 		display: flex;
+		flex-direction: column;
 	}
 
 	textarea {
 		flex-grow: 1;
 		padding: 5px;
+		margin-bottom: 10px;
 	}
 
 	button {
