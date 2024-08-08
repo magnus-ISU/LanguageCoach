@@ -1,32 +1,35 @@
-<script>
+<script lang="ts">
 	import { onMount } from "svelte"
 	import OpenAI from "openai"
 
-	let messages = []
+	type Message = OpenAI.Chat.ChatCompletionMessageParam
+
+	let messages: Message[] = []
 	let userInput = ""
 	let isLoading = false
 
 	const openai = new OpenAI({
 		apiKey: "your-api-key", // Replace with your actual API key
 		baseURL: "http://localhost:1234/v1", // Point to your local model
+		dangerouslyAllowBrowser: true, // Allow usage in browser environment
 	})
 
 	async function sendMessage() {
 		if (!userInput.trim()) return
 
 		isLoading = true
-		messages = [...messages, { role: "user", content: userInput }]
-		const userMessage = userInput
+		const userMessage: Message = { role: "user", content: userInput }
+		messages = [...messages, userMessage]
 		userInput = ""
 
 		try {
 			const response = await openai.chat.completions.create({
 				model: "your-local-model-name", // Replace with your actual model name
-				messages: messages.map(({ role, content }) => ({ role, content })),
+				messages: messages,
 			})
 
-			const assistantMessage = response.choices[0].message.content
-			messages = [...messages, { role: "assistant", content: assistantMessage }]
+			const assistantMessage = response.choices[0].message
+			messages = [...messages, assistantMessage]
 		} catch (error) {
 			console.error("Error:", error)
 			messages = [...messages, { role: "assistant", content: "Sorry, an error occurred." }]
@@ -56,7 +59,7 @@
 	</div>
 
 	<form on:submit|preventDefault={sendMessage}>
-		<input type="text" bind:value={userInput} placeholder="Type your message..." disabled={isLoading} />
+		<textarea bind:value={userInput} placeholder="Type your message..." disabled={isLoading}></textarea>
 		<button type="submit" disabled={isLoading}>Send</button>
 	</form>
 </main>
@@ -86,7 +89,7 @@
 		display: flex;
 	}
 
-	input {
+	textarea {
 		flex-grow: 1;
 		padding: 5px;
 	}
