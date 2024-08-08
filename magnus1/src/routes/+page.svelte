@@ -1,7 +1,6 @@
 <script lang="ts">
 	import Chat from "$lib/Chat.svelte"
 	import type { StoryEntry, SelectedSentence } from "$lib/const.svelte"
-	import Llm from "$lib/LLM.svelte"
 	import Stories from "$lib/Stories.svelte"
 	import Story from "$lib/Story.svelte"
 
@@ -18,9 +17,9 @@
 	<Story bind:stories bind:selectedStoryIndex bind:selectedSentence />
 
 	{#if selectedSentence !== undefined}
-		{#key selectedSentence}
-			<Chat bind:stories bind:selectedStoryIndex bind:selectedSentence></Chat>
-		{/key}
+		<!-- {#key selectedSentence} -->
+		<Chat bind:stories bind:selectedStoryIndex bind:selectedSentence></Chat>
+		<!-- {/key} -->
 	{/if}
 {/if}
 

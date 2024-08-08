@@ -52,11 +52,11 @@ The robber thought my uncle was crazy. He took the robe, dashed out the door, an
 		let match: RegExpExecArray | null
 		while ((match = /[\.?!。]/.exec(text)) != null) {
 			let str = text.slice(0, match.index + 1)
-			sentences.push({ sentence: str, chat: [] })
+			sentences.push({ sentence: str, chat: [], stream: "" })
 			text = text.slice(match.index + 1)
 		}
 		if (text.trim() !== "") {
-			sentences.push({ sentence: text, chat: [] })
+			sentences.push({ sentence: text, chat: [], stream: "" })
 		}
 		return sentences
 	}
