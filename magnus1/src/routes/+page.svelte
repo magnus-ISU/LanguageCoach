@@ -1,6 +1,5 @@
 <script lang="ts">
 	import Chat from "$lib/Chat.svelte"
-	import type { StoryEntry, SelectedSentence } from "$lib/const.svelte"
 	import Llm from "$lib/LLM.svelte"
 	import Stories from "$lib/Stories.svelte"
 	import Story from "$lib/Story.svelte"
@@ -21,6 +20,8 @@
 		<Chat bind:stories bind:selectedStoryIndex bind:selectedSentence></Chat>
 	{/if}
 {/if}
+
+<Llm />
 
 <style>
 	:global(*) {

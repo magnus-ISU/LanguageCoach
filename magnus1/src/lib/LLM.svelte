@@ -1,13 +1,10 @@
 <script lang="ts">
 	import OpenAI from "openai"
 	import SvelteMarkdown from "svelte-markdown"
-	import type { Message } from "./const.svelte"
 
-	type Props = {
-		messages: Message[]
-	}
-	let { messages = $bindable() }: Props = $props()
+	type Message = OpenAI.Chat.ChatCompletionMessageParam
 
+	let messages: Message[] = $state([])
 	let userInput = $state("")
 	let streamingMessage = $state("")
 	let isLoading = $derived(streamingMessage === "")
@@ -18,66 +15,57 @@
 		dangerouslyAllowBrowser: true,
 	})
 
-	if (messages.length !== 0) {
-		receiveMessage()
-	}
-
-	function sendMessage() {
+	async function sendMessage() {
 		if (!userInput.trim()) return
 
 		messages.push({ role: "user", content: userInput })
 		userInput = ""
-	}
+		streamingMessage = "..."
 
-	function setStream(stream: string) {
-		streamingMessage = stream
-	}
-	async function receiveMessage() {
-		setStream("...")
 		try {
 			const stream = await openai.chat.completions.create({
-				model: "local",
+				model: "your-local-model-name", // Replace with your actual model name
 				messages: messages,
 				stream: true,
 			})
 
 			for await (const chunk of stream) {
 				streamingMessage += chunk.choices[0]?.delta?.content || ""
-				console.log(streamingMessage)
 			}
-			console.log(messages, streamingMessage)
 
 			// Only update the messages array when the loading state is finished
 			messages.push({ role: "assistant", content: streamingMessage })
+			streamingMessage = ""
 		} catch (error) {
 			console.error("Error:", error)
 			messages.push({ role: "assistant", content: "Sorry, an error occurred." })
+			streamingMessage = ""
 		}
-		setStream("")
 	}
 
 	function addChat(event: KeyboardEvent & { currentTarget: EventTarget & HTMLTextAreaElement }) {
 		if (event.shiftKey && event.key === "Enter") {
 			sendMessage()
-			receiveMessage()
 		}
 	}
 </script>
 
-<div class="chat-container">
-	{#each messages as message}
-		<div class="message {message.role}">
-			<SvelteMarkdown source={`**${message.role}:** ${message.content}`} />
-		</div>
-	{/each}
-	{#if isLoading}
-		<div class="message assistant">
-			<SvelteMarkdown source={`**Assistant:** ${streamingMessage}`} />
-		</div>
-	{/if}
-</div>
+<main>
+	<div class="chat-container">
+		{#each messages as message}
+			<div class="message {message.role}">
+				<SvelteMarkdown source={`**${message.role}:** ${message.content}`} />
+			</div>
+		{/each}
+		{#if isLoading}
+			<div class="message assistant">
+				<SvelteMarkdown source={`**Assistant:** ${streamingMessage}`} />
+			</div>
+		{/if}
+	</div>
 
-<textarea bind:value={userInput} placeholder="Chat with an llm..." disabled={isLoading} onkeypress={addChat}></textarea>
+	<textarea bind:value={userInput} placeholder="Chat with an llm..." disabled={isLoading} onkeypress={addChat}></textarea>
+</main>
 
 <style>
 	.chat-container {
@@ -85,6 +73,10 @@
 		overflow-y: auto;
 		border: 1px solid #ccc;
 		padding: 10px;
+		margin-bottom: 10px;
+	}
+
+	.message {
 		margin-bottom: 10px;
 	}
 

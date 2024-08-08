@@ -1,6 +1,4 @@
 <script lang="ts">
-	import type { StoryEntry, SelectedSentence } from "./const.svelte"
-
 	type Props = {
 		stories: StoryEntry[]
 		selectedStoryIndex: number
@@ -25,7 +23,7 @@
 				<!-- svelte-ignore a11y_click_events_have_key_events -->
 				<!-- svelte-ignore a11y_no_static_element_interactions -->
 				<div class="sentence" onclick={() => selectSentence(paragraphIndex, sentenceIndex)}>
-					{sentence.sentence}
+					{sentence}
 				</div>
 			{/each}
 		</div>
